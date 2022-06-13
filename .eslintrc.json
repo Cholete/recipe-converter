@@ -27,5 +27,8 @@
         "prettier"
     ],
     "rules": {
+        "react/jsx-no-bind": [2, {
+            "allowFunctions": true
+          }]
     }
 }
