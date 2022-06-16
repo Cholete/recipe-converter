@@ -5,6 +5,7 @@ import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 import { Iingredient } from "../interfaces";
 import SingleIngredient from "./SingleIngredient";
 
@@ -108,6 +109,21 @@ function AddIngredients() {
               </Button>
             </Grid>
           </Grid>
+        </Stack>
+        <Stack spacing={2} direction="row" mt={8}>
+          <TextField
+            required
+            InputLabelProps={{ shrink: true }}
+            name="multiplier"
+            label="Multiplier"
+            placeholder="e.g. 2, 0.5, 1/3"
+            variant="outlined"
+            value={newIngredient.name}
+            onChange={handleChange}
+          />
+          <Link to="/convert">
+            <Button variant="contained">Convert Ingredients</Button>
+          </Link>
         </Stack>
       </Container>
     </div>
