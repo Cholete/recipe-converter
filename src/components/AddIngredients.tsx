@@ -16,13 +16,18 @@ function AddIngredients() {
     unit: "",
     name: "",
   });
+  const [multiplier, setMultiplier] = useState(1);
   const [ingredients, setIngredients] = useState<Iingredient[]>([]);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleNewIngredientChange(e: React.ChangeEvent<HTMLInputElement>) {
     setNewIngredient({
       ...newIngredient,
       [e.target.name]: e.target.value,
     });
+  }
+
+  function handleMultiplierChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setMultiplier(Number(e.target.value));
   }
 
   function onClickAdd() {
@@ -76,7 +81,7 @@ function AddIngredients() {
                 placeholder="e.g. 2, 1/2, 0.5"
                 variant="outlined"
                 value={newIngredient.amount}
-                onChange={handleChange}
+                onChange={handleNewIngredientChange}
               />
             </Grid>
             <Grid item xs={2}>
@@ -88,7 +93,7 @@ function AddIngredients() {
                 placeholder="e.g. cups, tsp, tablespoon"
                 variant="outlined"
                 value={newIngredient.unit}
-                onChange={handleChange}
+                onChange={handleNewIngredientChange}
               />
             </Grid>
             <Grid item xs={6}>
@@ -100,7 +105,7 @@ function AddIngredients() {
                 placeholder="e.g. flour, salt, sugar"
                 variant="outlined"
                 value={newIngredient.name}
-                onChange={handleChange}
+                onChange={handleNewIngredientChange}
               />
             </Grid>
             <Grid item xs={2}>
@@ -118,10 +123,10 @@ function AddIngredients() {
             label="Multiplier"
             placeholder="e.g. 2, 0.5, 1/3"
             variant="outlined"
-            value={newIngredient.name}
-            onChange={handleChange}
+            value={multiplier}
+            onChange={handleMultiplierChange}
           />
-          <Link to="/convert">
+          <Link to="/convert" state={{ ingredients, multiplier }}>
             <Button variant="contained">Convert Ingredients</Button>
           </Link>
         </Stack>
