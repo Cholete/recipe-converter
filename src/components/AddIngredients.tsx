@@ -16,7 +16,7 @@ function AddIngredients() {
     unit: "",
     name: "",
   });
-  const [multiplier, setMultiplier] = useState(1);
+  const [multiplier, setMultiplier] = useState("1");
   const [ingredients, setIngredients] = useState<Iingredient[]>([]);
 
   function handleNewIngredientChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -27,7 +27,7 @@ function AddIngredients() {
   }
 
   function handleMultiplierChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setMultiplier(Number(e.target.value));
+    setMultiplier(e.target.value);
   }
 
   function onClickAdd() {
@@ -71,20 +71,21 @@ function AddIngredients() {
           {ingredients.map((ingredient) => (
             <SingleIngredient ingredient={ingredient} />
           ))}
-          <Grid container spacing={2}>
-            <Grid item xs={2}>
+          <Grid container spacing={1}>
+            <Grid item xs={3}>
               <TextField
                 required
                 InputLabelProps={{ shrink: true }}
                 name="amount"
-                label="Amount"
-                placeholder="e.g. 2, 1/2, 0.5"
+                label="Amount(in decimal)"
+                placeholder="e.g. 2, 0.5, .33"
                 variant="outlined"
                 value={newIngredient.amount}
+                type="number"
                 onChange={handleNewIngredientChange}
               />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={3}>
               <TextField
                 required
                 InputLabelProps={{ shrink: true }}
@@ -96,7 +97,7 @@ function AddIngredients() {
                 onChange={handleNewIngredientChange}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={3}>
               <TextField
                 required
                 InputLabelProps={{ shrink: true }}
@@ -108,7 +109,7 @@ function AddIngredients() {
                 onChange={handleNewIngredientChange}
               />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={3}>
               <Button variant="text" size="small" onClick={onClickAdd}>
                 Add Ingredient
               </Button>
@@ -120,9 +121,10 @@ function AddIngredients() {
             required
             InputLabelProps={{ shrink: true }}
             name="multiplier"
-            label="Multiplier"
-            placeholder="e.g. 2, 0.5, 1/3"
+            label="Multiplier(in decimal)"
+            placeholder="e.g. 2, 0.5, .33"
             variant="outlined"
+            type="number"
             value={multiplier}
             onChange={handleMultiplierChange}
           />
