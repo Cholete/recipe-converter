@@ -5,12 +5,14 @@ import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
+import Alert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
 import { Iingredient } from "../interfaces";
 import SingleIngredient from "./SingleIngredient";
 
 // Component for listing ingredients for a recipe
 function AddIngredients() {
+  const navigate = useNavigate();
   const [newIngredient, setNewIngredient] = useState<Iingredient>({
     amount: "",
     unit: "",
@@ -18,8 +20,53 @@ function AddIngredients() {
   });
   const [multiplier, setMultiplier] = useState("1");
   const [ingredients, setIngredients] = useState<Iingredient[]>([]);
+  const [multiplierError, setMultiplierError] = useState(false);
+  const [multiplierErrorMsg, setMultiplierErrorMsg] = useState("");
+  const [newIngError, setNewIngError] = useState({
+    name: false,
+    amount: false,
+  });
+  const [newIngErrorMsg, setNewIngErrorMsg] = useState({
+    name: "",
+    amount: "",
+  });
+  const [atLeastOneIngAlert, setAtLeastOneIngAlert] = useState(false);
+  // stackoverflow.com/a/23872060
+  const decimalValidationRegex = /^((\d+(\.\d*)?)|(\.\d+))$/;
+  const decimalInputRegex = /^((\d+(\.\d*)?)|(\.\d+)|(\.))$/; // matches decimals and dot
+
+  function validate() {
+    const errorMessages = {
+      name: "",
+      amount: "",
+    };
+
+    if (!newIngredient.name.trim()) {
+      // empty name
+      errorMessages.name = "Name is required.";
+    }
+
+    const amount = newIngredient.amount.trim();
+    if (!amount) {
+      // empty amount
+      errorMessages.amount = "Amount is required.";
+    } else if (!decimalValidationRegex.test(amount)) {
+      // not a decimal
+      errorMessages.amount = "Invalid Amount.";
+    }
+
+    return errorMessages;
+  }
 
   function handleNewIngredientChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.name === "amount") {
+      const amount = e.target.value.trim();
+      // only allow decimal inputs or empty string
+      if (amount.length !== 0 && !decimalInputRegex.test(amount)) {
+        return;
+      }
+    }
+
     setNewIngredient({
       ...newIngredient,
       [e.target.name]: e.target.value,
@@ -27,29 +74,78 @@ function AddIngredients() {
   }
 
   function handleMultiplierChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setMultiplier(e.target.value);
+    // allow empty string or decimal inputs
+    if (e.target.value.length === 0 || decimalInputRegex.test(e.target.value)) {
+      setMultiplier(e.target.value);
+    }
   }
 
   function onClickAdd() {
-    setIngredients([
-      ...ingredients,
-      {
-        amount: newIngredient.amount,
-        unit: newIngredient.unit,
-        name: newIngredient.name,
-      },
-    ]);
-    setNewIngredient({
-      amount: "",
-      unit: "",
-      name: "",
-    });
+    const errorMessages = validate();
+    const newError = {
+      name: errorMessages.name.length !== 0,
+      amount: errorMessages.amount.length !== 0,
+    };
+
+    setNewIngError(newError);
+    // no errors
+    if (!Object.values(newError).includes(true)) {
+      setIngredients([
+        ...ingredients,
+        {
+          amount: newIngredient.amount,
+          unit: newIngredient.unit,
+          name: newIngredient.name,
+        },
+      ]);
+      setNewIngredient({
+        amount: "",
+        unit: "",
+        name: "",
+      });
+      // removing error messages
+      setNewIngError({
+        amount: false,
+        name: false,
+      });
+      // remove alert requiring one ingredient
+      setAtLeastOneIngAlert(false);
+    } else {
+      setNewIngErrorMsg(errorMessages);
+    }
+  }
+
+  function onClickConvert() {
+    if (multiplier.length === 0) {
+      setMultiplierErrorMsg("Multiplier is Required.");
+      setMultiplierError(true);
+      return;
+    }
+    if (!decimalValidationRegex.test(multiplier)) {
+      setMultiplierErrorMsg("Invalid Multiplier.");
+      setMultiplierError(true);
+      return;
+    }
+    if (ingredients.length <= 0) {
+      setAtLeastOneIngAlert(true);
+      setNewIngError({
+        name: true,
+        amount: true,
+      });
+      return;
+    }
+    navigate("/convert", { state: { ingredients, multiplier } });
   }
 
   return (
     <div>
       <Container maxWidth="md">
         <Typography variant="h6">Add Ingredients</Typography>
+        {atLeastOneIngAlert && (
+          <Alert severity="error">
+            At least one ingredient is required before converting.
+          </Alert>
+        )}
         <Stack spacing={1}>
           <Grid container spacing={2}>
             <Grid item xs={2}>
@@ -81,13 +177,13 @@ function AddIngredients() {
                 placeholder="e.g. 2, 0.5, .33"
                 variant="outlined"
                 value={newIngredient.amount}
-                type="number"
                 onChange={handleNewIngredientChange}
+                error={newIngError.amount}
+                helperText={newIngErrorMsg.amount}
               />
             </Grid>
             <Grid item xs={3}>
               <TextField
-                required
                 InputLabelProps={{ shrink: true }}
                 name="unit"
                 label="Unit"
@@ -107,6 +203,8 @@ function AddIngredients() {
                 variant="outlined"
                 value={newIngredient.name}
                 onChange={handleNewIngredientChange}
+                error={newIngError.name}
+                helperText={newIngErrorMsg.name}
               />
             </Grid>
             <Grid item xs={3}>
@@ -124,13 +222,14 @@ function AddIngredients() {
             label="Multiplier(in decimal)"
             placeholder="e.g. 2, 0.5, .33"
             variant="outlined"
-            type="number"
             value={multiplier}
             onChange={handleMultiplierChange}
+            error={multiplierError}
+            helperText={multiplierErrorMsg}
           />
-          <Link to="/convert" state={{ ingredients, multiplier }}>
-            <Button variant="contained">Convert Ingredients</Button>
-          </Link>
+          <Button variant="contained" onClick={onClickConvert}>
+            Convert Ingredients
+          </Button>
         </Stack>
       </Container>
     </div>
