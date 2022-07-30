@@ -7,8 +7,9 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
-import { Iingredient } from "../interfaces";
+import { Iingredient } from "../utils/interfaces";
 import SingleIngredient from "./SingleIngredient";
+import { decimalInputRegex, decimalValidationRegex } from "../utils/regex";
 
 // Component for listing ingredients for a recipe
 function AddIngredients() {
@@ -31,9 +32,6 @@ function AddIngredients() {
     amount: "",
   });
   const [atLeastOneIngAlert, setAtLeastOneIngAlert] = useState(false);
-  // stackoverflow.com/a/23872060
-  const decimalValidationRegex = /^((\d+(\.\d*)?)|(\.\d+))$/;
-  const decimalInputRegex = /^((\d+(\.\d*)?)|(\.\d+)|(\.))$/; // matches decimals and dot
 
   function validate() {
     const errorMessages = {
