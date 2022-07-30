@@ -6,11 +6,18 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { Iingredient } from "../interfaces";
 
+interface SingleIngredientProps {
+  ingredient: Iingredient;
+  deleteIngredient: (id: string) => void;
+}
+
 // component for a single ingredient in the ingredient list
-function SingleIngredient(props: { ingredient: Iingredient }) {
-  const { ingredient } = props;
-  function onClickEdit() {
-    alert("click edit");
+function SingleIngredient({
+  ingredient,
+  deleteIngredient,
+}: SingleIngredientProps) {
+  function onClickDelete() {
+    deleteIngredient(ingredient.id);
   }
 
   return (
@@ -32,8 +39,8 @@ function SingleIngredient(props: { ingredient: Iingredient }) {
           </Container>
         </Grid>
         <Grid item xs={2}>
-          <Button variant="text" size="small" onClick={onClickEdit}>
-            Edit
+          <Button variant="text" size="small" onClick={onClickDelete}>
+            DELETE
           </Button>
         </Grid>
       </Grid>

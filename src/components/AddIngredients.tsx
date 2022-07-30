@@ -6,6 +6,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
+import uniqid from "uniqid";
 import { Iingredient } from "../interfaces";
 import SingleIngredient from "./SingleIngredient";
 
@@ -15,6 +16,7 @@ function AddIngredients() {
     amount: "",
     unit: "",
     name: "",
+    id: "",
   });
   const [multiplier, setMultiplier] = useState("1");
   const [ingredients, setIngredients] = useState<Iingredient[]>([]);
@@ -37,13 +39,19 @@ function AddIngredients() {
         amount: newIngredient.amount,
         unit: newIngredient.unit,
         name: newIngredient.name,
+        id: uniqid(),
       },
     ]);
     setNewIngredient({
       amount: "",
       unit: "",
       name: "",
+      id: "",
     });
+  }
+
+  function deleteIngredient(id: string) {
+    setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
   }
 
   return (
@@ -69,7 +77,11 @@ function AddIngredients() {
             </Grid>
           </Grid>
           {ingredients.map((ingredient) => (
-            <SingleIngredient ingredient={ingredient} />
+            <SingleIngredient
+              key={ingredient.id}
+              ingredient={ingredient}
+              deleteIngredient={deleteIngredient}
+            />
           ))}
           <Grid container spacing={1}>
             <Grid item xs={3}>
