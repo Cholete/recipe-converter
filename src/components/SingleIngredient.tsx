@@ -4,7 +4,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-import { Iingredient } from "../interfaces";
+import { Iingredient } from "../utils/interfaces";
 
 interface SingleIngredientProps {
   ingredient: Iingredient;
