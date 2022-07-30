@@ -6,7 +6,8 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import { useLocation, Link } from "react-router-dom";
-import { Iingredient } from "../interfaces";
+import { Iingredient } from "../utils/interfaces";
+import { decimalInputRegex, decimalValidationRegex } from "../utils/regex";
 
 interface Istate {
   ingredients: Iingredient[];
@@ -23,13 +24,30 @@ function ConvertedIngredients() {
 
   // for the change multiplier text box
   const [newMultiplier, setNewMultiplier] = useState("");
+  const [newMultiplierError, setNewMultiplierError] = useState(false);
+  const [newMultiplierErrorMsg, setNewMultiplierErrorMsg] = useState("");
 
   function handleMultiplierChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setNewMultiplier(e.target.value);
+    // allow empty string or decimal inputs
+    if (e.target.value.length === 0 || decimalInputRegex.test(e.target.value)) {
+      setNewMultiplier(e.target.value);
+    }
   }
 
   function onClickChangeMultiplier() {
+    if (newMultiplier.length === 0) {
+      setNewMultiplierErrorMsg("Multiplier is Required.");
+      setNewMultiplierError(true);
+      return;
+    }
+    if (!decimalValidationRegex.test(newMultiplier)) {
+      setNewMultiplierErrorMsg("Invalid Multiplier.");
+      setNewMultiplierError(true);
+      return;
+    }
     setCurrentMultiplier(newMultiplier);
+    setNewMultiplierError(false);
+    setNewMultiplierErrorMsg("");
   }
 
   return (
@@ -63,9 +81,10 @@ function ConvertedIngredients() {
           label="Multiplier(in decimal)"
           placeholder="e.g. 2, 0.5, .33"
           variant="outlined"
-          type="number"
           value={newMultiplier}
           onChange={handleMultiplierChange}
+          error={newMultiplierError}
+          helperText={newMultiplierErrorMsg}
         />
         <Button variant="contained" onClick={onClickChangeMultiplier}>
           Change Multiplier
