@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
+import uniqid from "uniqid";
 import { Iingredient } from "../utils/interfaces";
 import SingleIngredient from "./SingleIngredient";
 import { decimalInputRegex, decimalValidationRegex } from "../utils/regex";
@@ -18,6 +19,7 @@ function AddIngredients() {
     amount: "",
     unit: "",
     name: "",
+    id: "",
   });
   const [multiplier, setMultiplier] = useState("1");
   const [ingredients, setIngredients] = useState<Iingredient[]>([]);
@@ -94,12 +96,14 @@ function AddIngredients() {
           amount: newIngredient.amount,
           unit: newIngredient.unit,
           name: newIngredient.name,
+          id: uniqid(),
         },
       ]);
       setNewIngredient({
         amount: "",
         unit: "",
         name: "",
+        id: "",
       });
       // removing error messages
       setNewIngError({
@@ -135,6 +139,10 @@ function AddIngredients() {
     navigate("/convert", { state: { ingredients, multiplier } });
   }
 
+  function deleteIngredient(id: string) {
+    setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
+  }
+
   return (
     <div>
       <Container maxWidth="md">
@@ -163,7 +171,11 @@ function AddIngredients() {
             </Grid>
           </Grid>
           {ingredients.map((ingredient) => (
-            <SingleIngredient ingredient={ingredient} />
+            <SingleIngredient
+              key={ingredient.id}
+              ingredient={ingredient}
+              deleteIngredient={deleteIngredient}
+            />
           ))}
           <Grid container spacing={1}>
             <Grid item xs={3}>
