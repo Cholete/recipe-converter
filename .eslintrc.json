@@ -30,5 +30,6 @@
         "react/jsx-no-bind": [2, {
             "allowFunctions": true
           }]
-    }
+    },
+    "ignorePatterns": ["build"]
 }
