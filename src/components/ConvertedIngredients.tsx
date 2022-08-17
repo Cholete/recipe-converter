@@ -11,7 +11,7 @@ import Switch from "@mui/material/Switch";
 import { useLocation, Link } from "react-router-dom";
 import { create, all } from "mathjs";
 import { Iingredient } from "../utils/interfaces";
-import { decimalInputRegex, decimalValidationRegex } from "../utils/regex";
+import isDecimalOrFraction from "../utils/regex";
 
 const config = {};
 const math = create(all, config);
@@ -38,13 +38,12 @@ function ConvertedIngredients() {
   const [newMultiplier, setNewMultiplier] = useState("");
   const [newMultiplierError, setNewMultiplierError] = useState(false);
   const [newMultiplierErrorMsg, setNewMultiplierErrorMsg] = useState("");
+
+  // toggle fraction display
   const [displayInFraction, setDisplayInFraction] = useState(false);
 
   function handleMultiplierChange(e: React.ChangeEvent<HTMLInputElement>) {
-    // allow empty string or decimal inputs
-    if (e.target.value.length === 0 || decimalInputRegex.test(e.target.value)) {
-      setNewMultiplier(e.target.value);
-    }
+    setNewMultiplier(e.target.value);
   }
 
   function onFractionSwitchChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -57,11 +56,12 @@ function ConvertedIngredients() {
       setNewMultiplierError(true);
       return;
     }
-    if (!decimalValidationRegex.test(newMultiplier)) {
+    if (!isDecimalOrFraction(newMultiplier)) {
       setNewMultiplierErrorMsg("Invalid Multiplier.");
       setNewMultiplierError(true);
       return;
     }
+    // setting new multiplier if everything is valid
     setCurrentMultiplier(newMultiplier);
     setNewMultiplierError(false);
     setNewMultiplierErrorMsg("");
@@ -88,7 +88,7 @@ function ConvertedIngredients() {
             Converted Ingredients(Multiplier: {currentMultiplier})
           </Typography>
           {ingredients.map((ingredient) => (
-            <Typography variant="body1">
+            <Typography variant="body1" key={ingredient.id}>
               {/* multiply amount and multipier then format in either fraction or decimal */}
               {formatAmount(
                 math.multiply(
@@ -104,7 +104,7 @@ function ConvertedIngredients() {
         <Grid item xs={6}>
           <Typography variant="h6">Original Ingredients</Typography>
           {ingredients.map((ingredient) => (
-            <Typography variant="body1">
+            <Typography variant="body1" key={ingredient.id}>
               {ingredient.amount} {ingredient.unit} {ingredient.name}
             </Typography>
           ))}
@@ -116,7 +116,7 @@ function ConvertedIngredients() {
           InputLabelProps={{ shrink: true }}
           name="multiplier"
           label="Multiplier(in decimal)"
-          placeholder="e.g. 2, 0.5, .33"
+          placeholder="e.g. 2, 1/3, 0.5"
           variant="outlined"
           value={newMultiplier}
           onChange={handleMultiplierChange}

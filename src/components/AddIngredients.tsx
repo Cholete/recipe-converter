@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import uniqid from "uniqid";
 import { Iingredient } from "../utils/interfaces";
 import SingleIngredient from "./SingleIngredient";
-import { decimalInputRegex, decimalValidationRegex } from "../utils/regex";
+import isDecimalOrFraction from "../utils/regex";
 
 // Component for listing ingredients for a recipe
 function AddIngredients() {
@@ -50,7 +50,7 @@ function AddIngredients() {
     if (!amount) {
       // empty amount
       errorMessages.amount = "Amount is required.";
-    } else if (!decimalValidationRegex.test(amount)) {
+    } else if (!isDecimalOrFraction(amount)) {
       // not a decimal
       errorMessages.amount = "Invalid Amount.";
     }
@@ -59,14 +59,6 @@ function AddIngredients() {
   }
 
   function handleNewIngredientChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.name === "amount") {
-      const amount = e.target.value.trim();
-      // only allow decimal inputs or empty string
-      if (amount.length !== 0 && !decimalInputRegex.test(amount)) {
-        return;
-      }
-    }
-
     setNewIngredient({
       ...newIngredient,
       [e.target.name]: e.target.value,
@@ -74,10 +66,7 @@ function AddIngredients() {
   }
 
   function handleMultiplierChange(e: React.ChangeEvent<HTMLInputElement>) {
-    // allow empty string or decimal inputs
-    if (e.target.value.length === 0 || decimalInputRegex.test(e.target.value)) {
-      setMultiplier(e.target.value);
-    }
+    setMultiplier(e.target.value);
   }
 
   function onClickAdd() {
@@ -88,7 +77,7 @@ function AddIngredients() {
     };
 
     setNewIngError(newError);
-    // no errors
+    // no error
     if (!Object.values(newError).includes(true)) {
       setIngredients([
         ...ingredients,
@@ -123,7 +112,7 @@ function AddIngredients() {
       setMultiplierError(true);
       return;
     }
-    if (!decimalValidationRegex.test(multiplier)) {
+    if (!isDecimalOrFraction(multiplier)) {
       setMultiplierErrorMsg("Invalid Multiplier.");
       setMultiplierError(true);
       return;
@@ -184,7 +173,7 @@ function AddIngredients() {
                 InputLabelProps={{ shrink: true }}
                 name="amount"
                 label="Amount(in decimal)"
-                placeholder="e.g. 2, 0.5, .33"
+                placeholder="e.g. 2, 1/3, 0.5"
                 variant="outlined"
                 value={newIngredient.amount}
                 onChange={handleNewIngredientChange}
@@ -230,7 +219,7 @@ function AddIngredients() {
             InputLabelProps={{ shrink: true }}
             name="multiplier"
             label="Multiplier(in decimal)"
-            placeholder="e.g. 2, 0.5, .33"
+            placeholder="e.g. 2, 1/3, 0.5"
             variant="outlined"
             value={multiplier}
             onChange={handleMultiplierChange}

@@ -1,5 +1,9 @@
-// used to restrict input
-export const decimalInputRegex = /^((\d+(\.\d*)?)|(\.\d+)|(\.))$/;
+const decimalRegex = /^((\d+(\.\d*)?)|(\.\d+))$/;
 
-// used to validate input
-export const decimalValidationRegex = /^((\d+(\.\d*)?)|(\.\d+))$/;
+const fractionRegex = /^[1-9][0-9]*\/[1-9][0-9]*$/;
+
+export default function isDecimalOrFraction(inputToValidate: string) {
+  return (
+    decimalRegex.test(inputToValidate) || fractionRegex.test(inputToValidate)
+  );
+}
