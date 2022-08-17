@@ -5,9 +5,21 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 import { useLocation, Link } from "react-router-dom";
+import { create, all } from "mathjs";
 import { Iingredient } from "../utils/interfaces";
 import { decimalInputRegex, decimalValidationRegex } from "../utils/regex";
+
+const config = {};
+const math = create(all, config);
+
+// format numbers either as fraction or decimal
+function formatAmount(value: any, formatType: "fraction" | "decimal") {
+  return math.format(value, { fraction: formatType });
+}
 
 interface Istate {
   ingredients: Iingredient[];
@@ -26,12 +38,17 @@ function ConvertedIngredients() {
   const [newMultiplier, setNewMultiplier] = useState("");
   const [newMultiplierError, setNewMultiplierError] = useState(false);
   const [newMultiplierErrorMsg, setNewMultiplierErrorMsg] = useState("");
+  const [displayInFraction, setDisplayInFraction] = useState(false);
 
   function handleMultiplierChange(e: React.ChangeEvent<HTMLInputElement>) {
     // allow empty string or decimal inputs
     if (e.target.value.length === 0 || decimalInputRegex.test(e.target.value)) {
       setNewMultiplier(e.target.value);
     }
+  }
+
+  function onFractionSwitchChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setDisplayInFraction(event.target.checked);
   }
 
   function onClickChangeMultiplier() {
@@ -52,6 +69,19 @@ function ConvertedIngredients() {
 
   return (
     <Container>
+      <FormGroup>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={displayInFraction}
+                onChange={onFractionSwitchChange}
+              />
+            }
+            label="show amount in fraction"
+          />
+        </FormGroup>
+      </FormGroup>
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Typography variant="h6">
@@ -59,7 +89,14 @@ function ConvertedIngredients() {
           </Typography>
           {ingredients.map((ingredient) => (
             <Typography variant="body1">
-              {Number(currentMultiplier) * Number(ingredient.amount)}{" "}
+              {/* multiply amount and multipier then format in either fraction or decimal */}
+              {formatAmount(
+                math.multiply(
+                  math.fraction(ingredient.amount),
+                  math.fraction(currentMultiplier),
+                ),
+                displayInFraction ? "fraction" : "decimal",
+              )}{" "}
               {ingredient.unit} {ingredient.name}
             </Typography>
           ))}
