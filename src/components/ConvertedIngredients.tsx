@@ -13,12 +13,49 @@ import { create, all } from "mathjs";
 import { Iingredient } from "../utils/interfaces";
 import isDecimalOrFraction from "../utils/regex";
 
-const config = {};
-const math = create(all, config);
+const math = create(all, { number: "number" });
 
 // format numbers either as fraction or decimal
-function formatAmount(value: any, formatType: "fraction" | "decimal") {
-  return math.format(value, { fraction: formatType });
+function scaleAmount(
+  amount: string,
+  multiplier: string,
+  formatType: "fraction" | "decimal",
+): string {
+  // Amount and multiplier turned to fraction in case user inputted them as fraction.
+  // Product turned to number for easier calculation later.
+  const product = math.number(
+    math.multiply(
+      math.fraction(amount),
+      math.fraction(multiplier),
+    ) as math.Fraction,
+  );
+
+  if (formatType === "fraction") {
+    // separating the whole part and fractional part of a number
+    const wholePart = math.floor(product);
+    const fractionalPart = math.subtract(product, wholePart);
+
+    // formatting output
+    if (wholePart !== 0 && fractionalPart !== 0) {
+      // mixed fraction
+      return `${wholePart} ${math.format(math.fraction(fractionalPart), {
+        fraction: "fraction",
+      })}`;
+    }
+    if (fractionalPart !== 0) {
+      return `${math.format(math.fraction(fractionalPart), {
+        // fraction
+        fraction: "fraction",
+      })}`;
+    }
+    // integer
+    return math.format(wholePart, {
+      precision: 3,
+    });
+  }
+  return math.format(product, {
+    precision: 3,
+  });
 }
 
 interface Istate {
@@ -90,11 +127,9 @@ function ConvertedIngredients() {
           {ingredients.map((ingredient) => (
             <Typography variant="body1" key={ingredient.id}>
               {/* multiply amount and multipier then format in either fraction or decimal */}
-              {formatAmount(
-                math.multiply(
-                  math.fraction(ingredient.amount),
-                  math.fraction(currentMultiplier),
-                ),
+              {scaleAmount(
+                ingredient.amount,
+                currentMultiplier,
                 displayInFraction ? "fraction" : "decimal",
               )}{" "}
               {ingredient.unit} {ingredient.name}
