@@ -16,24 +16,15 @@ import isDecimalOrFraction from "../utils/regex";
 const math = create(all, { number: "number" });
 
 // format numbers either as fraction or decimal
-function scaleAmount(
-  amount: string,
-  multiplier: string,
+function formatAmount(
+  amount: number | math.Fraction,
   formatType: "fraction" | "decimal",
-): string {
-  // Amount and multiplier turned to fraction in case user inputted them as fraction.
-  // Product turned to number for easier calculation later.
-  const product = math.number(
-    math.multiply(
-      math.fraction(amount),
-      math.fraction(multiplier),
-    ) as math.Fraction,
-  );
-
+) {
+  const amountAsNumber = math.number(amount);
   if (formatType === "fraction") {
     // separating the whole part and fractional part of a number
-    const wholePart = math.floor(product);
-    const fractionalPart = math.subtract(product, wholePart);
+    const wholePart = math.floor(amountAsNumber);
+    const fractionalPart = math.subtract(amountAsNumber, wholePart);
 
     // formatting output
     if (wholePart !== 0 && fractionalPart !== 0) {
@@ -48,14 +39,28 @@ function scaleAmount(
         fraction: "fraction",
       })}`;
     }
-    // integer
-    return math.format(wholePart, {
-      precision: 3,
-    });
   }
-  return math.format(product, {
-    precision: 3,
+  // integer or decimal
+  return math.format(amountAsNumber, {
+    precision: 4,
   });
+}
+
+// scale the amount by the multiplier
+function scaleAmount(
+  amount: string,
+  multiplier: string,
+  formatType: "fraction" | "decimal",
+): string {
+  // Amount and multiplier turned to fraction in case user inputted them as fraction.
+  // Product turned to number for easier calculation later.
+  const product = math.number(
+    math.multiply(
+      math.fraction(amount),
+      math.fraction(multiplier),
+    ) as math.Fraction,
+  );
+  return formatAmount(product, formatType);
 }
 
 interface Istate {
@@ -140,7 +145,12 @@ function ConvertedIngredients() {
           <Typography variant="h6">Original Ingredients</Typography>
           {ingredients.map((ingredient) => (
             <Typography variant="body1" key={ingredient.id}>
-              {ingredient.amount} {ingredient.unit} {ingredient.name}
+              {formatAmount(
+                // converting to fraction in case amount is entered as fraction
+                math.fraction(ingredient.amount),
+                displayInFraction ? "fraction" : "decimal",
+              )}{" "}
+              {ingredient.unit} {ingredient.name}
             </Typography>
           ))}
         </Grid>
