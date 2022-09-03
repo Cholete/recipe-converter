@@ -11,7 +11,10 @@ import Switch from "@mui/material/Switch";
 import { useLocation, Link } from "react-router-dom";
 import { create, all } from "mathjs";
 import { Iingredient } from "../utils/interfaces";
-import isDecimalOrFraction from "../utils/regex";
+import {
+  isDecimalOrFraction,
+  numericPlaceHolder,
+} from "../utils/constantsAndFunctions";
 
 const math = create(all, { number: "number" });
 
@@ -158,7 +161,7 @@ function ConvertedIngredients() {
           InputLabelProps={{ shrink: true }}
           name="multiplier"
           label="Multiplier(in decimal)"
-          placeholder="e.g. 2, 1/3, 0.5"
+          placeholder={numericPlaceHolder}
           variant="outlined"
           value={newMultiplier}
           onChange={handleMultiplierChange}

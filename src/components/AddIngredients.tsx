@@ -10,7 +10,10 @@ import { useNavigate } from "react-router-dom";
 import uniqid from "uniqid";
 import { Iingredient } from "../utils/interfaces";
 import SingleIngredient from "./SingleIngredient";
-import isDecimalOrFraction from "../utils/regex";
+import {
+  isDecimalOrFraction,
+  numericPlaceHolder,
+} from "../utils/constantsAndFunctions";
 
 // Component for listing ingredients for a recipe
 function AddIngredients() {
@@ -173,7 +176,7 @@ function AddIngredients() {
                 InputLabelProps={{ shrink: true }}
                 name="amount"
                 label="Amount(in decimal)"
-                placeholder="e.g. 2, 1/3, 0.5"
+                placeholder={numericPlaceHolder}
                 variant="outlined"
                 value={newIngredient.amount}
                 onChange={handleNewIngredientChange}
@@ -219,7 +222,7 @@ function AddIngredients() {
             InputLabelProps={{ shrink: true }}
             name="multiplier"
             label="Multiplier(in decimal)"
-            placeholder="e.g. 2, 1/3, 0.5"
+            placeholder={numericPlaceHolder}
             variant="outlined"
             value={multiplier}
             onChange={handleMultiplierChange}
