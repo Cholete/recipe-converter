@@ -24,7 +24,7 @@ function AddIngredients() {
     name: "",
     id: "",
   });
-  const [multiplier, setMultiplier] = useState("1");
+  const [multiplier, setMultiplier] = useState("");
   const [ingredients, setIngredients] = useState<Iingredient[]>([]);
   const [multiplierError, setMultiplierError] = useState(false);
   const [multiplierErrorMsg, setMultiplierErrorMsg] = useState("");
@@ -175,7 +175,7 @@ function AddIngredients() {
                 required
                 InputLabelProps={{ shrink: true }}
                 name="amount"
-                label="Amount(in decimal)"
+                label="Amount"
                 placeholder={numericPlaceHolder}
                 variant="outlined"
                 value={newIngredient.amount}
@@ -221,7 +221,7 @@ function AddIngredients() {
             required
             InputLabelProps={{ shrink: true }}
             name="multiplier"
-            label="Multiplier(in decimal)"
+            label="Multiplier"
             placeholder={numericPlaceHolder}
             variant="outlined"
             value={multiplier}

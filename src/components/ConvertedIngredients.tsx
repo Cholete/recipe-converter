@@ -160,7 +160,7 @@ function ConvertedIngredients() {
           required
           InputLabelProps={{ shrink: true }}
           name="multiplier"
-          label="Multiplier(in decimal)"
+          label="Multiplier"
           placeholder={numericPlaceHolder}
           variant="outlined"
           value={newMultiplier}
