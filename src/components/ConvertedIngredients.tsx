@@ -15,11 +15,11 @@ import isDecimalOrFraction from "../utils/regex";
 
 const math = create(all, { number: "number" });
 
-// format numbers either as fraction or decimal
+// format numbers either as fraction(regular or mixed), decimal, or integer
 function formatAmount(
   amount: number | math.Fraction,
   formatType: "fraction" | "decimal",
-) {
+): string {
   const amountAsNumber = math.number(amount);
   if (formatType === "fraction") {
     // separating the whole part and fractional part of a number
@@ -53,13 +53,10 @@ function scaleAmount(
   formatType: "fraction" | "decimal",
 ): string {
   // Amount and multiplier turned to fraction in case user inputted them as fraction.
-  // Product turned to number for easier calculation later.
-  const product = math.number(
-    math.multiply(
-      math.fraction(amount),
-      math.fraction(multiplier),
-    ) as math.Fraction,
-  );
+  const product = math.multiply(
+    math.fraction(amount),
+    math.fraction(multiplier),
+  ) as math.Fraction;
   return formatAmount(product, formatType);
 }
 
