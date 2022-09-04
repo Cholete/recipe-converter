@@ -8,7 +8,6 @@ import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import { useNavigate, useLocation } from "react-router-dom";
 import uniqid from "uniqid";
-import { Iingredient } from "../utils/interfaces";
 import { Iingredient, Istate } from "../utils/interfaces";
 import SingleIngredient from "./SingleIngredient";
 import {
