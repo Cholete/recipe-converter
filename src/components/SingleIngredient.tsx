@@ -4,6 +4,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
+import ClearIcon from "@mui/icons-material/Clear";
 import { Iingredient } from "../utils/interfaces";
 
 interface SingleIngredientProps {
@@ -39,9 +40,12 @@ function SingleIngredient({
           </Container>
         </Grid>
         <Grid item xs={2}>
-          <Button variant="text" size="small" onClick={onClickDelete}>
-            DELETE
-          </Button>
+          <Button
+            variant="text"
+            size="small"
+            onClick={onClickDelete}
+            startIcon={<ClearIcon color="disabled" />}
+          />
         </Grid>
       </Grid>
     </Paper>
