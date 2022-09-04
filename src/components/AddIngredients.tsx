@@ -6,9 +6,10 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import uniqid from "uniqid";
 import { Iingredient } from "../utils/interfaces";
+import { Iingredient, Istate } from "../utils/interfaces";
 import SingleIngredient from "./SingleIngredient";
 import {
   isDecimalOrFraction,
@@ -18,14 +19,21 @@ import {
 // Component for listing ingredients for a recipe
 function AddIngredients() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const previous = location.state as Istate;
+
   const [newIngredient, setNewIngredient] = useState<Iingredient>({
     amount: "",
     unit: "",
     name: "",
     id: "",
   });
-  const [multiplier, setMultiplier] = useState("");
-  const [ingredients, setIngredients] = useState<Iingredient[]>([]);
+  const [multiplier, setMultiplier] = useState(
+    previous ? previous.multiplier : "",
+  );
+  const [ingredients, setIngredients] = useState<Iingredient[]>(
+    previous ? previous.ingredients : [],
+  );
   const [multiplierError, setMultiplierError] = useState(false);
   const [multiplierErrorMsg, setMultiplierErrorMsg] = useState("");
   const [newIngError, setNewIngError] = useState({

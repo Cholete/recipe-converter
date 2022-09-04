@@ -10,7 +10,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { useLocation, Link } from "react-router-dom";
 import { create, all } from "mathjs";
-import { Iingredient } from "../utils/interfaces";
+import { Istate } from "../utils/interfaces";
 import {
   isDecimalOrFraction,
   numericPlaceHolder,
@@ -61,11 +61,6 @@ function scaleAmount(
     math.fraction(multiplier),
   ) as math.Fraction;
   return formatAmount(product, formatType);
-}
-
-interface Istate {
-  ingredients: Iingredient[];
-  multiplier: string;
 }
 
 // component to display the converted amount of ingredients
@@ -172,11 +167,14 @@ function ConvertedIngredients() {
           Change Multiplier
         </Button>
       </Stack>
-      <Link to="/" state={{ ingredients, multiplier }}>
-        <Button sx={{ mt: 5 }} variant="contained">
-          Convert Another Recipe
-        </Button>
-      </Link>
+      <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
+        <Link to="/">
+          <Button variant="contained">Convert Another Recipe</Button>
+        </Link>
+        <Link to="/" state={{ ingredients, multiplier }}>
+          <Button variant="contained">Edit ingredients</Button>
+        </Link>
+      </Stack>
     </Container>
   );
 }

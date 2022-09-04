@@ -4,3 +4,8 @@ export interface Iingredient {
   name: string;
   id: string;
 }
+
+export interface Istate {
+  ingredients: Iingredient[];
+  multiplier: string;
+}
