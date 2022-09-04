@@ -163,11 +163,17 @@ function ConvertedIngredients() {
           error={newMultiplierError}
           helperText={newMultiplierErrorMsg}
         />
-        <Button variant="contained" onClick={onClickChangeMultiplier}>
+        <Button
+          variant="contained"
+          onClick={onClickChangeMultiplier}
+          sx={{
+            height: "40px",
+          }}
+        >
           Change Multiplier
         </Button>
       </Stack>
-      <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
+      <Stack direction="row" spacing={2} mt={4} mb={20}>
         <Link to="/">
           <Button variant="contained">Convert Another Recipe</Button>
         </Link>

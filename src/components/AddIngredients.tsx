@@ -224,7 +224,7 @@ function AddIngredients() {
             </Grid>
           </Grid>
         </Stack>
-        <Stack spacing={2} direction="row" mt={8}>
+        <Stack spacing={2} direction="row" mt={4} mb={20}>
           <TextField
             required
             InputLabelProps={{ shrink: true }}
@@ -237,7 +237,13 @@ function AddIngredients() {
             error={multiplierError}
             helperText={multiplierErrorMsg}
           />
-          <Button variant="contained" onClick={onClickConvert}>
+          <Button
+            variant="contained"
+            onClick={onClickConvert}
+            sx={{
+              height: "40px",
+            }}
+          >
             Convert Ingredients
           </Button>
         </Stack>
