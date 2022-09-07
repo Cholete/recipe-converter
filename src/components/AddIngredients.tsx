@@ -87,21 +87,21 @@ function AddIngredients() {
           </Alert>
         )}
         <Stack spacing={1}>
-          <Grid container spacing={2}>
-            <Grid item xs={2}>
-              <Container>
-                <Typography variant="body1">Amount</Typography>
-              </Container>
+          <Grid container spacing={2} mb={1}>
+            <Grid item xs={2.6}>
+              <Typography variant="body1" ml={2}>
+                Amount
+              </Typography>
             </Grid>
-            <Grid item xs={2}>
-              <Container>
-                <Typography variant="body1">unit</Typography>
-              </Container>
+            <Grid item xs={3}>
+              <Typography variant="body1" ml={2}>
+                unit
+              </Typography>
             </Grid>
-            <Grid item xs={6}>
-              <Container>
-                <Typography variant="body1">name</Typography>
-              </Container>
+            <Grid item xs={3.4}>
+              <Typography variant="body1" ml={2}>
+                name
+              </Typography>
             </Grid>
           </Grid>
           {ingredients.map((ingredient) => (

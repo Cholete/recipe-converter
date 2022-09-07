@@ -93,8 +93,8 @@ function EditIngredientForm(props: IEditIngredientFormProps) {
   }
 
   return (
-    <Grid container spacing={1}>
-      <Grid item xs={3}>
+    <Grid container columnSpacing={1}>
+      <Grid item xs={2.6}>
         <TextField
           required
           InputLabelProps={{ shrink: true }}
@@ -119,7 +119,7 @@ function EditIngredientForm(props: IEditIngredientFormProps) {
           onChange={handleIngredientChange}
         />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={3.4}>
         <TextField
           required
           InputLabelProps={{ shrink: true }}
