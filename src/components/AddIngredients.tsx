@@ -15,8 +15,9 @@ import {
   numericPlaceHolder,
   isIngredientEmpty,
   validateIngredient,
+  createEmptyIngredient,
 } from "../utils/constantsAndFunctions";
-import { regE } from "../utils/testSet";
+// import { regE } from "../utils/testSet";
 
 // Component for listing ingredients for a recipe
 function AddIngredients() {
@@ -26,8 +27,12 @@ function AddIngredients() {
   const [multiplier, setMultiplier] = useState(
     previous ? previous.multiplier : "",
   );
+  const initialIngredientsArray = [];
+  for (let i = 0; i < 7; i += 1) {
+    initialIngredientsArray.push(createEmptyIngredient());
+  }
   const [ingredients, setIngredients] = useState<Iingredient[]>(
-    previous ? previous.ingredients : regE,
+    previous ? previous.ingredients : initialIngredientsArray,
   );
   const [multiplierError, setMultiplierError] = useState(false);
   const [multiplierErrorMsg, setMultiplierErrorMsg] = useState("");

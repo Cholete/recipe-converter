@@ -3,7 +3,6 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { Iingredient } from "../utils/interfaces";
-import { numericPlaceHolder } from "../utils/constantsAndFunctions";
 
 export interface IEditIngredientFormProps {
   deleteIngredient(id: string): void;
@@ -34,7 +33,6 @@ function EditIngredientForm(props: IEditIngredientFormProps) {
           InputLabelProps={{ shrink: true }}
           name="amount"
           label="Amount"
-          placeholder={numericPlaceHolder}
           variant="outlined"
           value={ingredient.amount}
           onChange={handleIngredientChange}
@@ -47,7 +45,6 @@ function EditIngredientForm(props: IEditIngredientFormProps) {
           InputLabelProps={{ shrink: true }}
           name="unit"
           label="Unit"
-          placeholder="e.g. cups, tsp, tablespoon"
           variant="outlined"
           value={ingredient.unit}
           onChange={handleIngredientChange}
@@ -59,7 +56,6 @@ function EditIngredientForm(props: IEditIngredientFormProps) {
           InputLabelProps={{ shrink: true }}
           name="name"
           label="Name"
-          placeholder="e.g. flour, salt, sugar"
           variant="outlined"
           value={ingredient.name}
           onChange={handleIngredientChange}

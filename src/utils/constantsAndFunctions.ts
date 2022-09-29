@@ -1,3 +1,4 @@
+import uniqid from "uniqid";
 import { Iingredient, IerrorMessages } from "./interfaces";
 
 // Regex for input validation
@@ -44,4 +45,17 @@ export function validateIngredient(ingredient: Iingredient): IerrorMessages {
   }
 
   return errorMessages;
+}
+
+export function createEmptyIngredient(): Iingredient {
+  return {
+    id: uniqid(),
+    amount: "",
+    unit: "",
+    name: "",
+    errorMessages: {
+      amount: "",
+      name: "",
+    },
+  };
 }
