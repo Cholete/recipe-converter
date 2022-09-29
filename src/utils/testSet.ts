@@ -67,6 +67,16 @@ export const reg = [
   },
 ];
 
+export const regE = reg.map((ing) => {
+  return {
+    ...ing,
+    errorMessages: {
+      name: "",
+      amount: "",
+    },
+  };
+});
+
 export const many = [
   {
     amount: "1/2",

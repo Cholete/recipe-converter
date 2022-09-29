@@ -1,95 +1,29 @@
-import React, { useState } from "react";
+import React from "react";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { Iingredient } from "../utils/interfaces";
-import {
-  numericPlaceHolder,
-  isDecimalOrFraction,
-} from "../utils/constantsAndFunctions";
+import { numericPlaceHolder } from "../utils/constantsAndFunctions";
 
 export interface IEditIngredientFormProps {
-  saveIngredient(ingredient: Iingredient): void;
+  deleteIngredient(id: string): void;
+  editIngredient(ingredient: Iingredient): void;
+  ingredient: Iingredient;
 }
 
 function EditIngredientForm(props: IEditIngredientFormProps) {
-  const { saveIngredient } = props;
-  const [ingredient, setIngredient] = useState<Iingredient>({
-    amount: "",
-    unit: "",
-    name: "",
-    id: "",
-  });
-  const [ingError, setIngError] = useState({
-    name: false,
-    amount: false,
-  });
-  const [ingErrorMsg, setIngErrorMsg] = useState({
-    name: "",
-    amount: "",
-  });
-
-  function validate() {
-    const errorMessages = {
-      name: "",
-      amount: "",
-    };
-
-    if (!ingredient.name.trim()) {
-      // empty name
-      errorMessages.name = "Name is required.";
-    }
-
-    const amount = ingredient.amount.trim();
-    if (!amount) {
-      // empty amount
-      errorMessages.amount = "Amount is required.";
-    } else if (!isDecimalOrFraction(amount)) {
-      // not a decimal
-      errorMessages.amount = "Invalid Amount.";
-    }
-
-    return errorMessages;
-  }
+  const { ingredient, deleteIngredient, editIngredient } = props;
 
   function handleIngredientChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setIngredient({
+    const newIngredient = {
       ...ingredient,
       [e.target.name]: e.target.value,
-    });
+    };
+    editIngredient(newIngredient);
   }
 
-  function onClickSave() {
-    const errorMessages = validate();
-    const newError = {
-      name: errorMessages.name.length !== 0,
-      amount: errorMessages.amount.length !== 0,
-    };
-
-    setIngError(newError);
-    // no error
-    if (!Object.values(newError).includes(true)) {
-      saveIngredient(ingredient);
-      // clear fields
-      setIngredient({
-        amount: "",
-        unit: "",
-        name: "",
-        id: "",
-      });
-
-      // removing error messages
-      setIngError({
-        amount: false,
-        name: false,
-      });
-      setIngErrorMsg({
-        amount: "",
-        name: "",
-      });
-    } else {
-      setIngErrorMsg(errorMessages);
-    }
+  function onClickDelete() {
+    deleteIngredient(ingredient.id);
   }
 
   return (
@@ -104,8 +38,8 @@ function EditIngredientForm(props: IEditIngredientFormProps) {
           variant="outlined"
           value={ingredient.amount}
           onChange={handleIngredientChange}
-          error={ingError.amount}
-          helperText={ingErrorMsg.amount}
+          error={ingredient.errorMessages.amount !== ""}
+          helperText={ingredient.errorMessages.amount}
         />
       </Grid>
       <Grid item xs={3}>
@@ -129,13 +63,13 @@ function EditIngredientForm(props: IEditIngredientFormProps) {
           variant="outlined"
           value={ingredient.name}
           onChange={handleIngredientChange}
-          error={ingError.name}
-          helperText={ingErrorMsg.name}
+          error={ingredient.errorMessages.name !== ""}
+          helperText={ingredient.errorMessages.name}
         />
       </Grid>
       <Grid item xs={3}>
-        <Button variant="text" size="small" onClick={onClickSave}>
-          SAVE
+        <Button variant="text" size="small" onClick={onClickDelete}>
+          DELETE
         </Button>
       </Grid>
     </Grid>

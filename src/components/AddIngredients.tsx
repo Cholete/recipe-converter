@@ -9,12 +9,14 @@ import Alert from "@mui/material/Alert";
 import { useNavigate, useLocation } from "react-router-dom";
 import uniqid from "uniqid";
 import { Iingredient, Istate } from "../utils/interfaces";
-import SingleIngredient from "./SingleIngredient";
 import EditIngredientForm from "./EditIngredientForm";
 import {
   isDecimalOrFraction,
   numericPlaceHolder,
+  isIngredientEmpty,
+  validateIngredient,
 } from "../utils/constantsAndFunctions";
+import { regE } from "../utils/testSet";
 
 // Component for listing ingredients for a recipe
 function AddIngredients() {
@@ -25,7 +27,7 @@ function AddIngredients() {
     previous ? previous.multiplier : "",
   );
   const [ingredients, setIngredients] = useState<Iingredient[]>(
-    previous ? previous.ingredients : [],
+    previous ? previous.ingredients : regE,
   );
   const [multiplierError, setMultiplierError] = useState(false);
   const [multiplierErrorMsg, setMultiplierErrorMsg] = useState("");
@@ -35,22 +37,29 @@ function AddIngredients() {
     setMultiplier(e.target.value);
   }
 
-  function saveIngredient(ingredient: Iingredient): void {
-    setIngredients([
-      ...ingredients,
-      {
-        amount: ingredient.amount,
-        unit: ingredient.unit,
-        name: ingredient.name,
-        id: uniqid(),
-      },
-    ]);
+  function editIngredient(editedIngredient: Iingredient): void {
+    const newIngredientList = ingredients.map((ingredient) =>
+      ingredient.id === editedIngredient.id ? editedIngredient : ingredient,
+    );
+    setIngredients(newIngredientList);
+  }
 
-    // remove alert requiring one ingredient
-    setAtLeastOneIngAlert(false);
+  function onClickAddIngredient() {
+    const newIngredient = {
+      amount: "",
+      unit: "",
+      name: "",
+      errorMessages: {
+        name: "",
+        amount: "",
+      },
+      id: uniqid(),
+    };
+    setIngredients([...ingredients, newIngredient]);
   }
 
   function onClickConvert() {
+    // Checking for multiplier errors
     if (multiplier.length === 0) {
       setMultiplierErrorMsg("Multiplier is Required.");
       setMultiplierError(true);
@@ -61,16 +70,47 @@ function AddIngredients() {
       setMultiplierError(true);
       return;
     }
-    if (ingredients.length <= 0) {
+
+    // Checking for Ingredients Error
+    // Checking there is at least one ingredient
+    const nonEmptyIngredients = ingredients.filter(
+      (ingredient) => !isIngredientEmpty(ingredient),
+    );
+    if (nonEmptyIngredients.length <= 0) {
       setAtLeastOneIngAlert(true);
-      // require name and amount for one ingredient
-      // setNewIngError({
-      //   name: true,
-      //   amount: true,
-      // });
       return;
     }
-    navigate("/convert", { state: { ingredients, multiplier } });
+    // Validating each ingredient field
+    let isThereAnIngredientWithError = false;
+    const ingredientsWithUpdatedErrors = ingredients.map((ingredient) => {
+      // only validate non-empty ingredients
+      if (!isIngredientEmpty(ingredient)) {
+        const errorMessages = validateIngredient(ingredient);
+        // Make a note if there is an ingredient with error
+        // to prevent converting later
+        if (
+          !isThereAnIngredientWithError &&
+          (errorMessages.amount !== "" || errorMessages.name !== "")
+        ) {
+          isThereAnIngredientWithError = true;
+        }
+        const ingredientWithNewErrors = {
+          ...ingredient,
+          errorMessages,
+        };
+        return ingredientWithNewErrors;
+      }
+      return ingredient;
+    });
+    // Updating error messages in each ingredients
+    setIngredients(ingredientsWithUpdatedErrors);
+
+    // Only allow convertion when there is no ingredient with error
+    if (!isThereAnIngredientWithError) {
+      navigate("/convert", {
+        state: { ingredients: nonEmptyIngredients, multiplier },
+      });
+    }
   }
 
   function deleteIngredient(id: string) {
@@ -105,13 +145,16 @@ function AddIngredients() {
             </Grid>
           </Grid>
           {ingredients.map((ingredient) => (
-            <SingleIngredient
+            <EditIngredientForm
               key={ingredient.id}
               ingredient={ingredient}
               deleteIngredient={deleteIngredient}
+              editIngredient={editIngredient}
             />
           ))}
-          <EditIngredientForm saveIngredient={saveIngredient} />
+          <Button variant="contained" onClick={onClickAddIngredient}>
+            Add Ingredients
+          </Button>
         </Stack>
         <Stack spacing={2} direction="row" mt={4} mb={20}>
           <TextField
