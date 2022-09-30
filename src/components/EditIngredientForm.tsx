@@ -1,7 +1,8 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import ClearTwoToneIcon from "@mui/icons-material/ClearTwoTone";
 import { Iingredient } from "../utils/interfaces";
 
 export interface IEditIngredientFormProps {
@@ -64,9 +65,9 @@ function EditIngredientForm(props: IEditIngredientFormProps) {
         />
       </Grid>
       <Grid item xs={3}>
-        <Button variant="text" size="small" onClick={onClickDelete}>
-          DELETE
-        </Button>
+        <IconButton aria-label="delete" tabIndex={-1} onClick={onClickDelete}>
+          <ClearTwoToneIcon />
+        </IconButton>
       </Grid>
     </Grid>
   );
