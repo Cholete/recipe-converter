@@ -6,10 +6,13 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
+import IconButton from "@mui/material/IconButton";
+import HelpCenterOutlinedIcon from "@mui/icons-material/HelpCenterOutlined";
 import { useNavigate, useLocation } from "react-router-dom";
 import uniqid from "uniqid";
 import { Iingredient, Istate } from "../utils/interfaces";
 import EditIngredientForm from "./EditIngredientForm";
+import HelpDialog from "./HelpDialog";
 import {
   isDecimalOrFraction,
   numericPlaceHolder,
@@ -37,7 +40,7 @@ function AddIngredients() {
   const [multiplierError, setMultiplierError] = useState(false);
   const [multiplierErrorMsg, setMultiplierErrorMsg] = useState("");
   const [atLeastOneIngAlert, setAtLeastOneIngAlert] = useState(false);
-
+  const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   function handleMultiplierChange(e: React.ChangeEvent<HTMLInputElement>) {
     setMultiplier(e.target.value);
   }
@@ -118,6 +121,14 @@ function AddIngredients() {
     }
   }
 
+  function onClickHelp() {
+    setIsHelpDialogOpen(true);
+  }
+
+  function handleCloseHelpDialog() {
+    setIsHelpDialogOpen(false);
+  }
+
   function deleteIngredient(id: string) {
     setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
   }
@@ -125,7 +136,16 @@ function AddIngredients() {
   return (
     <div>
       <Container maxWidth="md">
-        <Typography variant="h6">Add Ingredients</Typography>
+        <HelpDialog
+          handleCloseHelpDialog={handleCloseHelpDialog}
+          isHelpDialogOpen={isHelpDialogOpen}
+        />
+        <Typography variant="h6">
+          Add Ingredients
+          <IconButton size="small" onClick={onClickHelp}>
+            <HelpCenterOutlinedIcon />
+          </IconButton>
+        </Typography>
         {atLeastOneIngAlert && (
           <Alert severity="error">
             At least one ingredient is required before converting.
