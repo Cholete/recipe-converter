@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import IconButton from "@mui/material/IconButton";
 import HelpCenterOutlinedIcon from "@mui/icons-material/HelpCenterOutlined";
+import AddIcon from "@mui/icons-material/Add";
 import { useNavigate, useLocation } from "react-router-dom";
 import uniqid from "uniqid";
 import { Iingredient, Istate } from "../utils/interfaces";
@@ -177,7 +178,11 @@ function AddIngredients() {
               editIngredient={editIngredient}
             />
           ))}
-          <Button variant="contained" onClick={onClickAddIngredient}>
+          <Button
+            startIcon={<AddIcon />}
+            variant="contained"
+            onClick={onClickAddIngredient}
+          >
             Add Ingredients
           </Button>
         </Stack>
