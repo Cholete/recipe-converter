@@ -59,3 +59,27 @@ export function createEmptyIngredient(): Iingredient {
     },
   };
 }
+
+// removes leading and trailing spaces from amount, name and unit fields of an Ingredient
+export function trimSpaces(ingredients: Iingredient[]): Iingredient[] {
+  const trimmedIngredients = ingredients.map((ingredient) => {
+    return {
+      ...ingredient,
+      amount: ingredient.amount.trim(),
+      name: ingredient.name.trim(),
+      unit: ingredient.unit.trim(),
+    };
+  });
+  return trimmedIngredients;
+}
+
+// returns ingredients where either amount, unit, and name fields
+// are non empty and removes trailing and leading spaces in those fields.
+export function getNonEmptyTrimmedIngredients(
+  ingredients: Iingredient[],
+): Iingredient[] {
+  const nonEmptyIngredients = ingredients.filter(
+    (ingredient) => !isIngredientEmpty(ingredient),
+  );
+  return trimSpaces(nonEmptyIngredients);
+}

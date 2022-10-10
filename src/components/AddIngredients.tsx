@@ -20,6 +20,7 @@ import {
   isIngredientEmpty,
   validateIngredient,
   createEmptyIngredient,
+  getNonEmptyTrimmedIngredients,
 } from "../utils/constantsAndFunctions";
 // import { regE } from "../utils/testSet";
 
@@ -81,14 +82,14 @@ function AddIngredients() {
     }
 
     // Checking for Ingredients Error
+
     // Checking there is at least one ingredient
-    const nonEmptyIngredients = ingredients.filter(
-      (ingredient) => !isIngredientEmpty(ingredient),
-    );
-    if (nonEmptyIngredients.length <= 0) {
+    const nonEmptyTrimmedIng = getNonEmptyTrimmedIngredients(ingredients);
+    if (nonEmptyTrimmedIng.length <= 0) {
       setAtLeastOneIngAlert(true);
       return;
     }
+
     // Validating each ingredient field
     let isThereAnIngredientWithError = false;
     const ingredientsWithUpdatedErrors = ingredients.map((ingredient) => {
@@ -117,7 +118,7 @@ function AddIngredients() {
     // Only allow convertion when there is no ingredient with error
     if (!isThereAnIngredientWithError) {
       navigate("/convert", {
-        state: { ingredients: nonEmptyIngredients, multiplier },
+        state: { ingredients: nonEmptyTrimmedIng, multiplier },
       });
     }
   }
