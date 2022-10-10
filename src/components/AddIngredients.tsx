@@ -75,7 +75,7 @@ function AddIngredients() {
       setMultiplierError(true);
       return;
     }
-    if (!isDecimalOrFraction(multiplier)) {
+    if (!isDecimalOrFraction(multiplier.trim())) {
       setMultiplierErrorMsg("Invalid Multiplier.");
       setMultiplierError(true);
       return;
@@ -118,7 +118,10 @@ function AddIngredients() {
     // Only allow convertion when there is no ingredient with error
     if (!isThereAnIngredientWithError) {
       navigate("/convert", {
-        state: { ingredients: nonEmptyTrimmedIng, multiplier },
+        state: {
+          ingredients: nonEmptyTrimmedIng,
+          multiplier: multiplier.trim(),
+        },
       });
     }
   }
